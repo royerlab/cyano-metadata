@@ -1,16 +1,13 @@
 """Tests for DaXi v0.1 metadata models."""
 
 import json
-from pathlib import Path
 
-from cyano_metadata_specs.daxi.v0_1 import DaxiMetadata
-
-SAMPLES_DIR = Path(__file__).parent.parent / "samples" / "daxi" / "v0_1"
+from cyano_metadata.daxi.v0_1 import DaxiMetadata
 
 
-def test_all_v0_1_samples_parse():
+def test_all_v0_1_samples_parse(daxi_v0_1_samples):
     """Ensure all v0.1 sample files parse without error."""
-    sample_files = sorted(SAMPLES_DIR.glob("*.json"))
+    sample_files = sorted(daxi_v0_1_samples.glob("*.json"))
     assert len(sample_files) > 0, "No v0.1 sample files found"
 
     for sample_file in sample_files:

@@ -39,7 +39,7 @@ wheels = [
 ]
 
 [[package]]
-name = "cyano-metadata-specs"
+name = "cyano-metadata"
 version = "0.0.1"
 source = { editable = "." }
 dependencies = [

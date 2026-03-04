@@ -7,10 +7,10 @@ Import specific versions explicitly, or use the convenience imports for the curr
 Examples
 --------
 Import a specific version:
-    >>> from cyano_metadata_specs.daxi.v0_1 import DaxiMetadata
+    >>> from cyano_metadata.daxi.v0_1 import DaxiMetadata
 
 Import the current stable version (convenience):
-    >>> from cyano_metadata_specs.daxi import DaxiMetadata
+    >>> from cyano_metadata.daxi import DaxiMetadata
 """
 
 # Re-export current stable version for convenience

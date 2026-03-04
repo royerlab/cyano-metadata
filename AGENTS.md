@@ -1,10 +1,10 @@
-# Agent Context for cyano-metadata-specs
+# Agent Context for cyano-metadata
 
 This document contains essential information for AI agents working on this project.
 
 ## Project Overview
 
-cyano-metadata-specs is a Python package containing Pydantic models for metadata specifications from microscopes controlled by the Cyano acquisition software. This package acts as a living specification that preserves all historical versions of metadata formats.
+cyano-metadata is a Python package containing Pydantic models for metadata specifications from microscopes controlled by the Cyano acquisition software. This package acts as a living specification that preserves all historical versions of metadata formats.
 
 Supported microscopes:
 - DaXi: Light-sheet microscope with multi-view acquisition
@@ -53,7 +53,7 @@ Requirements:
 Each metadata version is immutable and isolated in its own namespace.
 
 ```
-cyano_metadata_specs/
+cyano_metadata/
 ├── daxi/
 │   ├── __init__.py          # Re-exports current stable version
 │   ├── v0_1/
@@ -70,14 +70,14 @@ Import patterns:
 
 ```python
 # Explicit version import (recommended)
-from cyano_metadata_specs.daxi.v0_1 import DaxiMetadata
+from cyano_metadata.daxi.v0_1 import DaxiMetadata
 
 # Import and alias multiple versions
-from cyano_metadata_specs.daxi.v0_1 import DaxiMetadata as DaxiMetadataV01
-from cyano_metadata_specs.daxi.v0_2 import DaxiMetadata as DaxiMetadataV02
+from cyano_metadata.daxi.v0_1 import DaxiMetadata as DaxiMetadataV01
+from cyano_metadata.daxi.v0_2 import DaxiMetadata as DaxiMetadataV02
 
 # Convenience import (gets current stable version)
-from cyano_metadata_specs.daxi import DaxiMetadata
+from cyano_metadata.daxi import DaxiMetadata
 ```
 
 ## Versioning Guidelines
@@ -102,7 +102,7 @@ Note: Only the "daxi" key is owned by this project. Other keys (e.g., "plate") a
 ## Adding a New Microscope
 
 ```bash
-mkdir -p cyano_metadata_specs/quadravision/v0_1
+mkdir -p cyano_metadata/quadravision/v0_1
 ```
 
 Then implement models in quadravision/v0_1/metadata.py and models.py, create __init__.py to export public API, add convenience re-export in quadravision/__init__.py, and write tests in tests/test_quadravision_v0_1.py
@@ -110,7 +110,7 @@ Then implement models in quadravision/v0_1/metadata.py and models.py, create __i
 ## Adding a New Version
 
 ```bash
-mkdir -p cyano_metadata_specs/daxi/v0_3
+mkdir -p cyano_metadata/daxi/v0_3
 ```
 
 Then implement new models (can import from previous versions if needed).
@@ -120,10 +120,10 @@ Important: Backward compatibility between versions of the spec is not a goal, bu
 ## Supporting files
 
 ```
-~/source/cyano-metadata-specs/
+~/source/cyano-metadata/
 ├── pyproject.toml                      # Package config
 ├── Makefile                            # Dev automation
-├── cyano_metadata_specs/               # Package source
+├── cyano_metadata/               # Package source
 ├── tests/                              # Test suite
 │   ├── test_daxi_v0_1.py
 │   └── test_daxi_v0_2.py
@@ -138,5 +138,5 @@ Important: Backward compatibility between versions of the spec is not a goal, bu
 - Always use uv for Python operations
 - Run make check before commits
 - Use version in path, not class name: daxi.v0_1.DaxiMetadata
-- Package structure: Source layout with cyano_metadata_specs/ package
+- Package structure: Source layout with cyano_metadata/ package
 - Dependencies: Managed via uv and declared in pyproject.toml
