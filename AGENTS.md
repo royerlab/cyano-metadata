@@ -75,9 +75,6 @@ from cyano_metadata.daxi.v0_1 import DaxiMetadata
 # Import and alias multiple versions
 from cyano_metadata.daxi.v0_1 import DaxiMetadata as DaxiMetadataV01
 from cyano_metadata.daxi.v0_2 import DaxiMetadata as DaxiMetadataV02
-
-# Convenience import (gets current stable version)
-from cyano_metadata.daxi import DaxiMetadata
 ```
 
 ## Versioning Guidelines

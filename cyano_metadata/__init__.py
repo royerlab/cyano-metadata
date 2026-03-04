@@ -14,9 +14,6 @@ Usage
 Import specific versions explicitly:
     >>> from cyano_metadata.daxi.v0_1 import DaxiMetadata
     >>> from cyano_metadata.daxi.v0_2 import DaxiMetadata
-
-Or use the convenience imports for the current stable version:
-    >>> from cyano_metadata.daxi import DaxiMetadata
 """
 
 __version__ = "0.0.1"
