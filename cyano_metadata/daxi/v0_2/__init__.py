@@ -9,5 +9,21 @@ For implementation details, see cyano_metadata_specs.daxi.v0_1.
 """
 
 from ..v0_1 import DaxiMetadata, PositionDefinition, TimingEntry
+from .plate import (
+    AcqPositionSpec,
+    CameraSpec,
+    PlateSpec,
+    PositionDescriptor,
+    build_plate_spec,
+)
 
-__all__ = ["DaxiMetadata", "PositionDefinition", "TimingEntry"]
+__all__ = [
+    "AcqPositionSpec",
+    "CameraSpec",
+    "DaxiMetadata",
+    "PlateSpec",
+    "PositionDefinition",
+    "PositionDescriptor",
+    "TimingEntry",
+    "build_plate_spec",
+]
