@@ -60,12 +60,14 @@ cyano_metadata/
 │   │   ├── __init__.py
 │   │   ├── metadata.py      # DaxiMetadata class
 │   │   └── models.py        # Supporting models
-│   └── v0_2/
-│       └── __init__.py      # Re-exports from v0_1 (backward compatible)
+│   ├── v0_2/
+│   │   ├── __init__.py      # Re-exports from v0_1 (backward compatible)
+│   │   └── plate.py         # HCS plate spec builder
+│   └── etc
 └── quadravision/            # Future microscope
     └── v0_1/
+    └── etc
 ```
-
 Import patterns:
 
 ```python

@@ -1,0 +1,40 @@
+{
+  "framerate_hz": 70,
+  "global_exposure_ms": 6.0889929742388755,
+  "microscope_name": "DaXi",
+  "objective_position_offset_um": 88.0,
+  "estimated_volume_offset_um": 219.6,
+  "positions": {
+    "pos0": [
+      0.0,
+      0.0
+    ]
+  },
+  "processing": {
+    "fluorescence_clip": {
+      "min": 100
+    },
+    "quantize_step": 4
+  },
+  "timing_detail": {
+    "pos0": {
+      "0": {
+        "1": {
+          "end": 1772145395.093832,
+          "start": 1772145379.4545703
+        },
+        "2": {
+          "end": 1772145410.7522202,
+          "start": 1772145395.0938444
+        }
+      }
+    }
+  },
+  "version": "0.3",
+  "views_to_acquire": [
+    1,
+    2
+  ],
+  "z_scan_range_um": 1000,
+  "z_step_size_um": 1.018
+}
