@@ -1,44 +1,47 @@
 """Supporting models for DaXi metadata v0.3.
 
-v0.3 introduces the ``processing`` record: a deliberately minimal log of the
-background subtraction and quantization applied (if done at all).
+v0.3 introduces the ``processing`` record: a per-wavelength log of the
+value-level operations (background subtraction, quantization) applied to a
+stored dataset, if any. It is keyed by channel wavelength because a camera can
+carry more than one wavelength, so the wavelength is the stable unique key.
 """
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
-class FluorescenceClip(BaseModel):
-    """Record that the fluorophore channels were clipped below a floor.
+class ChannelProcessing(BaseModel):
+    """Lossy, value-level processing applied to one wavelength/channel.
 
-    The presence of this record means every fluorophore-channel value below
-    ``min`` was clipped up to ``min`` (a background/pedestal floor). Downstream
-    code must not subtract the pedestal again.
-    """
-
-    min: int = Field(..., description="Clip floor: fluorophore values below this were raised to it")
-
-
-class Processing(BaseModel):
-    """Lossy, post-camera processing applied to a stored DaXi dataset.
-
-    A lossy copy writes this under ``.zattrs["daxi"]["processing"]`` so the
-    recompressed dataset is self-identifying and downstream code cannot
-    double-subtract or misquantify.
-
-    This is a closed, intentionally tiny vocabulary — only simple value-level
-    operations belong here. Anything spatial (fusion, deskew, registration,
-    stitching) is out of scope and must not be recorded here. Encountering an
-    unknown key is an error, not something to silently ignore: a new operation
-    means a new spec version.
+    A closed, intentionally tiny vocabulary: only simple value-level operations
+    belong here. Anything spatial (fusion, deskew, registration, stitching) is
+    out of scope and must not be recorded here. Encountering an unknown key is an
+    error, not something to silently ignore: a new operation means a new spec
+    version.
     """
 
     model_config = ConfigDict(extra="forbid")
 
-    fluorescence_clip: FluorescenceClip | None = Field(
+    subtract: int | None = Field(
         None,
-        description="Present iff the fluorophore channels were clipped below a floor",
+        description=(
+            "Background floor removed as max(x - N, 0); null if not subtracted. "
+            "Downstream code must not subtract the pedestal again."
+        ),
     )
     quantize_step: int | None = Field(
         None,
-        description="Present iff values were rounded to this multiple",
+        description="Values rounded to the nearest multiple of N; null if not quantized.",
     )
+
+
+class Processing(RootModel[dict[str, ChannelProcessing]]):
+    """Per-wavelength processing map, keyed by channel wavelength (e.g. ``"561nm"``).
+
+    A lossy copy writes this under ``.zattrs["daxi"]["processing"]`` so the
+    recompressed dataset is self-identifying per channel: each wavelength records
+    independently whether it was subtracted and/or quantized. Label-free channels
+    typically have ``subtract`` null; fluorophore channels typically carry a
+    subtract and may or may not be quantized.
+    """
+
+    root: dict[str, ChannelProcessing]

@@ -5,7 +5,7 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from cyano_metadata.daxi.v0_3 import DaxiMetadata, FluorescenceClip, Processing
+from cyano_metadata.daxi.v0_3 import ChannelProcessing, DaxiMetadata, Processing
 
 
 def test_all_v0_3_samples_parse(daxi_v0_3_samples):
@@ -22,15 +22,19 @@ def test_all_v0_3_samples_parse(daxi_v0_3_samples):
 
 
 def test_processing_parsed_from_sample(daxi_v0_3_samples):
-    """The processing block should round-trip into the typed model."""
+    """The per-wavelength processing block should round-trip into the typed model."""
     with (daxi_v0_3_samples / "with_processing.json").open() as f:
         data = json.load(f)
 
     metadata = DaxiMetadata.model_validate(data)
     assert metadata.processing is not None
-    assert metadata.processing.fluorescence_clip is not None
-    assert metadata.processing.fluorescence_clip.min == 100
-    assert metadata.processing.quantize_step == 4
+    proc = metadata.processing.root
+    # Label-free (780nm): quantized, not subtracted.
+    assert proc["780nm"].subtract is None
+    assert proc["780nm"].quantize_step == 4
+    # Fluorescence (561nm): subtracted, not quantized.
+    assert proc["561nm"].subtract == 100
+    assert proc["561nm"].quantize_step is None
 
 
 def test_processing_absent_on_raw_acquisition():
@@ -47,20 +51,23 @@ def test_processing_absent_on_raw_acquisition():
 
 
 def test_partial_processing_records():
-    """Each processing key is independent — either may appear alone."""
-    clip_only = Processing.model_validate({"fluorescence_clip": {"min": 100}})
-    assert clip_only.fluorescence_clip == FluorescenceClip(min=100)
-    assert clip_only.quantize_step is None
+    """Each per-channel key is independent: subtract and quantize_step stand alone."""
+    subtract_only = ChannelProcessing.model_validate({"subtract": 100})
+    assert subtract_only.subtract == 100
+    assert subtract_only.quantize_step is None
 
-    quant_only = Processing.model_validate({"quantize_step": 4})
-    assert quant_only.fluorescence_clip is None
+    quant_only = ChannelProcessing.model_validate({"quantize_step": 4})
+    assert quant_only.subtract is None
     assert quant_only.quantize_step == 4
 
 
-def test_processing_rejects_unknown_keys():
-    """The processing vocabulary is closed — unknown ops must not be silently dropped."""
+def test_processing_rejects_unknown_ops():
+    """The per-channel vocabulary is closed: unknown ops must not be silently dropped."""
     with pytest.raises(ValidationError):
-        Processing.model_validate({"deskew": True})
+        ChannelProcessing.model_validate({"deskew": True})
+    # And through the per-wavelength map.
+    with pytest.raises(ValidationError):
+        Processing.model_validate({"561nm": {"deskew": True}})
 
 
 def test_v0_3_reads_older_data(daxi_v0_1_samples, daxi_v0_2_samples):
