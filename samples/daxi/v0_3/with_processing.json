@@ -11,10 +11,18 @@
     ]
   },
   "processing": {
-    "fluorescence_clip": {
-      "min": 100
+    "780nm": {
+      "subtract": null,
+      "quantize_step": 4
     },
-    "quantize_step": 4
+    "488nm": {
+      "subtract": 100,
+      "quantize_step": null
+    },
+    "561nm": {
+      "subtract": 100,
+      "quantize_step": null
+    }
   },
   "timing_detail": {
     "pos0": {
