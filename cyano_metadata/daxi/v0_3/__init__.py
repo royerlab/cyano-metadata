@@ -16,8 +16,10 @@ from ..v0_2 import (
 )
 from .metadata import DaxiMetadata
 from .models import ChannelProcessing, Processing
+from .store import SUPPORTED_VERSIONS, load_daxi_metadata
 
 __all__ = [
+    "SUPPORTED_VERSIONS",
     "AcqPositionSpec",
     "CameraSpec",
     "ChannelProcessing",
@@ -28,4 +30,5 @@ __all__ = [
     "Processing",
     "TimingEntry",
     "build_plate_spec",
+    "load_daxi_metadata",
 ]
