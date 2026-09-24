@@ -42,9 +42,10 @@ class DaxiMetadata(BaseModel):
     framerate_hz: int | float = Field(..., description="Frame rate in Hz")
     global_exposure_ms: float = Field(..., description="Global exposure time in milliseconds")
 
-    # Position definitions (legacy format: dict mapping position names to [x, y] coordinates)
-    positions: dict[str, tuple[float, float]] = Field(
-        ..., description="Position definitions as dict mapping position name to [x, y] coordinates"
+    # Position definitions (legacy format: dict mapping position names to [x, y] coordinates).
+    # Optional because newer stores may write only position_definitions, which supersedes it.
+    positions: dict[str, tuple[float, float]] | None = Field(
+        None, description="Legacy position definitions as dict mapping position name to [x, y] coordinates in mm"
     )
 
     # Timing information (nested structure: position -> timepoint -> view -> {start, end})
@@ -56,12 +57,8 @@ class DaxiMetadata(BaseModel):
     views_to_acquire: list[int] | None = Field(None, description="List of view indices to acquire (v0.2+)")
     z_scan_range_um: float | None = Field(None, description="Z scan range in microns (v0.2+)")
     z_step_size_um: float | None = Field(None, description="Z step size in microns (v0.2+)")
-    objective_position_offset_um: float | None = Field(
-        None, description="Objective position offset in microns (v0.2+)"
-    )
-    estimated_volume_offset_um: float | None = Field(
-        None, description="Estimated volume offset in microns (v0.2+)"
-    )
+    objective_position_offset_um: float | None = Field(None, description="Objective position offset in microns (v0.2+)")
+    estimated_volume_offset_um: float | None = Field(None, description="Estimated volume offset in microns (v0.2+)")
 
     # Future field (not yet in actual data but defined in acquisition code)
     position_definitions: list[PositionDefinition] | None = Field(

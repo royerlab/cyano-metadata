@@ -164,11 +164,20 @@ class TestLoadDaxiMetadata:
         assert caught.value.path == group
 
     def test_missing_required_field_is_invalid(self, tmp_path):
-        block = {k: v for k, v in VALID_BLOCK.items() if k != "positions"}
+        block = {k: v for k, v in VALID_BLOCK.items() if k != "timing_detail"}
         group = write_v2_group(tmp_path / "plate", {"daxi": block})
 
         with pytest.raises(InvalidDaxiBlockError):
             load_daxi_metadata(group)
+
+    def test_legacy_positions_are_optional(self, tmp_path):
+        """Newer stores may write only ``position_definitions``."""
+        block = {k: v for k, v in VALID_BLOCK.items() if k != "positions"}
+        group = write_v2_group(tmp_path / "plate", {"daxi": block})
+
+        metadata = load_daxi_metadata(group)
+        assert metadata is not None
+        assert metadata.positions is None
 
     def test_negative_subtract_is_invalid(self, tmp_path):
         """A negative pedestal would invert the sign of any compensation."""
