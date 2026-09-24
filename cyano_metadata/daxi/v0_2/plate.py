@@ -87,12 +87,8 @@ class PlateSpec(BaseModel):
     ``cyano_streams.create_hcs_layout()`` what iohub calls to make.
     """
 
-    channel_names: list[str] = Field(
-        ..., description="Plate-level channel names for iohub (one per unique view)"
-    )
-    positions: list[PositionDescriptor] = Field(
-        ..., description="Position-channel nodes to create"
-    )
+    channel_names: list[str] = Field(..., description="Plate-level channel names for iohub (one per unique view)")
+    positions: list[PositionDescriptor] = Field(..., description="Position-channel nodes to create")
 
 
 # ---------------------------------------------------------------------------
@@ -134,9 +130,7 @@ def build_plate_spec(
         all_views.update(pos_views)
     all_views_sorted = sorted(all_views)
 
-    channel_names = [
-        f"{_view_display_name(v)} | v{v}_c1" for v in all_views_sorted
-    ]
+    channel_names = [f"{_view_display_name(v)} | v{v}_c1" for v in all_views_sorted]
 
     # Build wavelength → camera lookup
     wl_to_camera: dict[int, CameraSpec] = {}
@@ -173,9 +167,7 @@ def build_plate_spec(
                     cam.pixel_size_um,
                     cam.pixel_size_um,
                 ]
-                downsampled_scale = full_scale[:2] + [
-                    s / DOWNSAMPLE_FACTOR for s in full_scale[2:]
-                ]
+                downsampled_scale = full_scale[:2] + [s * DOWNSAMPLE_FACTOR for s in full_scale[2:]]
 
                 descriptors.append(
                     PositionDescriptor(

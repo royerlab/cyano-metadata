@@ -166,7 +166,7 @@ class TestScaleComputation:
         assert full_scale[4] == 0.23  # X
 
     def test_downsampled_scale(self):
-        """Level '1' should be 4x downsampled in Z, Y, X but same T, V."""
+        """Level '1' voxels should be 4x larger in Z, Y, X (4x fewer of them) but same T, V."""
         spec = build_plate_spec(
             cameras=_single_camera(),
             positions=_single_position(),
@@ -179,9 +179,9 @@ class TestScaleComputation:
 
         assert down[0] == full[0]  # T unchanged
         assert down[1] == full[1]  # V unchanged
-        assert down[2] == full[2] / 4  # Z 4x
-        assert down[3] == full[3] / 4  # Y 4x
-        assert down[4] == full[4] / 4  # X 4x
+        assert down[2] == full[2] * 4  # Z 4x
+        assert down[3] == full[3] * 4  # Y 4x
+        assert down[4] == full[4] * 4  # X 4x
 
     def test_per_position_views_override(self):
         """Positions with per-position views should use their own view list."""
